@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panda Cha</title>
+<meta name="description" content="Panda Cha: tés fríos con fruta real. Conoce los sabores y vive la experiencia de realidad aumentada.">
+<meta name="theme-color" content="#FEFBF7">
+<link rel="icon" href="app-assets/img/panda-cara.png">
+<link rel="apple-touch-icon" href="app-assets/img/panda-cara.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Caveat+Brush&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --durazno:#F04D1A; --durazno-sombra:#B53A12; --limon:#ED9F2D; --fresa:#FCB6B5; --hoja:#6A9D42;
+  --cacao:#4C3228; --cacao-suave:#6B5047; --crema:#FEFBF7; --coral:#E4505A;
+  --f-titulo:'Baloo 2','Nunito',system-ui,sans-serif; --f-texto:'Poppins',system-ui,sans-serif; --f-slogan:'Caveat Brush',cursive;
+  --tab-h:76px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--crema);color:var(--cacao);font-family:var(--f-texto)}
+body{min-height:100vh;min-height:100dvh}
+img{display:block}
+button{font:inherit;color:inherit}
+
+.app{position:relative;max-width:520px;margin:0 auto;min-height:100vh;min-height:100dvh;padding-bottom:calc(var(--tab-h) + 28px + env(safe-area-inset-bottom));overflow:hidden}
+
+/* fondo suave con frutas */
+.fondo{position:fixed;inset:0;pointer-events:none;z-index:0}
+.fondo img{position:absolute;opacity:.2}
+.fondo .a{width:190px;left:-70px;top:90px;transform:rotate(-12deg)}
+.fondo .b{width:150px;right:-60px;top:360px;transform:rotate(14deg)}
+.fondo .c{width:170px;left:-60px;bottom:140px;transform:rotate(10deg)}
+
+/* cabecera */
+.cabecera{position:relative;z-index:1;display:flex;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 20px 4px}
+.cabecera img{height:46px;width:auto}
+
+.vista{position:relative;z-index:1;padding:8px 20px 0;animation:entra .35s ease both}
+.vista[hidden]{display:none}
+@keyframes entra{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.encabezado{text-align:center;padding:8px 8px 18px}
+.pill{display:inline-block;padding:6px 14px;background:#fff;border:2px solid var(--fresa);border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.encabezado h1{margin:12px 0 4px;font-family:var(--f-titulo);font-weight:800;font-size:32px;line-height:1.05}
+.encabezado h1 span{color:var(--durazno)}
+.encabezado p{margin:0;font-size:13.5px;color:var(--cacao-suave)}
+
+/* ---------- tarjetas flip ---------- */
+.lista{display:flex;flex-direction:column;gap:22px}
+.flip{position:relative;width:100%;aspect-ratio:4/5;border:0;padding:0;background:none;cursor:pointer;perspective:1200px;text-align:left}
+.flip-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.9,.3,1)}
+.flip.volteada .flip-in{transform:rotateY(180deg)}
+.cara{position:absolute;inset:0;border-radius:30px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:3px solid #fff;box-shadow:0 8px 0 var(--sombra,#F3CFCD),0 14px 28px rgba(76,50,40,.12)}
+.frente img.foto{width:100%;height:100%;object-fit:cover}
+.frente::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,rgba(76,50,40,0),rgba(76,50,40,.72))}
+.frente .info{position:absolute;left:20px;right:20px;bottom:18px;z-index:2;color:#fff}
+.frente .nombre{font-family:var(--f-titulo);font-weight:800;font-size:27px;line-height:1}
+.frente .desc{margin-top:4px;font-size:13px;font-weight:500;opacity:.95}
+.girar{position:absolute;top:14px;right:14px;z-index:3;display:flex;align-items:center;gap:6px;padding:7px 12px 7px 10px;background:rgba(255,255,255,.92);border-radius:999px;font-size:11px;font-weight:600;color:var(--cacao)}
+.girar svg{width:15px;height:15px}
+
+.dorso{transform:rotateY(180deg);background:var(--bg);display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 22px 22px}
+.dorso .mascota{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.dorso .mascota img{max-height:100%;max-width:62%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(76,50,40,.08))}
+.dorso h2{margin:6px 0 0;font-family:var(--f-titulo);font-weight:800;font-size:27px;line-height:1.05}
+.dorso h2 span{color:var(--acento)}
+.dorso .lema{margin:2px 0 8px;font-family:var(--f-slogan);font-size:20px;color:var(--acento)}
+.dorso p{margin:0;font-size:13px;line-height:1.5;color:var(--cacao-suave)}
+.chips{display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap}
+.chip{padding:5px 12px;background:#fff;border-radius:999px;font-size:11.5px;font-weight:600}
+.cerrar{position:absolute;top:14px;right:14px;display:flex;align-items:center;gap:6px;padding:7px 12px 7px 10px;background:#fff;border-radius:999px;font-size:11px;font-weight:600}
+.cerrar svg{width:15px;height:15px}
+
+.t-fresa{--bg:#FCD3D2;--acento:#E4505A;--sombra:#F0A9A8}
+.t-durazno{--bg:#FFD8C6;--acento:#F04D1A;--sombra:#F3B79D}
+.t-lichi{--bg:#FBE0E3;--acento:#E4505A;--sombra:#F0B9BE}
+.t-limon{--bg:#FBE9B4;--acento:#C97E0C;--sombra:#EFD08A}
+
+/* movimiento leve del panda al voltear la tarjeta */
+.flip.volteada .mascota img{animation:pop .75s .3s cubic-bezier(.3,1.6,.5,1) both,mece 3.6s 1.1s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes pop{0%{opacity:0;transform:scale(.7) rotate(-6deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes mece{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-6px) rotate(-2deg)}50%{transform:translateY(0) rotate(0)}75%{transform:translateY(-4px) rotate(2deg)}}
+
+.pie{margin:34px 0 6px;text-align:center;font-family:var(--f-slogan);font-size:21px;color:var(--coral);display:flex;justify-content:center;align-items:center;gap:8px}
+.pie img{width:17px}
+
+/* ---------- momentos ---------- */
+.momentos{position:relative;border-radius:34px;overflow:hidden;aspect-ratio:3/4.1;border:3px solid #fff;box-shadow:0 8px 0 #F3CFCD,0 14px 28px rgba(76,50,40,.12);background:#2b1a14}
+.momentos > img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 100%;transform-origin:70% 100%;animation:respira 6s ease-in-out infinite}
+@keyframes respira{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.momentos::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,26,20,.92) 0%,rgba(43,26,20,.82) 42%,rgba(43,26,20,.25) 68%,rgba(43,26,20,0) 100%)}
+.visor{position:absolute;inset:18px;z-index:2;pointer-events:none}
+.visor i{position:absolute;width:26px;height:26px;border:3px solid rgba(255,255,255,.85)}
+.visor i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-radius:12px 0 0 0}
+.visor i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-radius:0 12px 0 0}
+.visor i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0;border-radius:0 0 0 12px}
+.visor i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 12px 0}
+.m-texto{position:absolute;z-index:3;left:0;right:0;top:0;padding:38px 30px 0;text-align:center;color:#fff}
+.estado{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;background:var(--limon);color:var(--cacao);border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.estado b{width:8px;height:8px;border-radius:50%;background:var(--durazno);animation:late 1.4s ease-in-out infinite}
+@keyframes late{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+.icono-cam{margin:18px auto 12px;width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+.icono-cam svg{width:34px;height:34px}
+.m-texto h2{margin:0;font-family:var(--f-titulo);font-weight:800;font-size:27px;line-height:1.08}
+.m-texto h2 span{color:var(--fresa)}
+.m-texto p{margin:10px auto 0;max-width:290px;font-size:13.5px;line-height:1.5;opacity:.95}
+
+/* ---------- barra inferior ---------- */
+.tabbar{position:fixed;z-index:10;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));width:min(calc(100% - 32px),488px);height:var(--tab-h);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:#fff;border:2px solid var(--fresa);border-radius:999px;box-shadow:0 8px 0 #F3CFCD,0 16px 30px rgba(76,50,40,.14)}
+.tab{border:0;padding:0;font-family:inherit;background:none;border-radius:999px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:var(--cacao-suave);cursor:pointer;text-decoration:none;transition:background .25s,color .25s,transform .15s}
+.tab svg{width:25px;height:25px;stroke:currentColor}
+.tab:active{transform:scale(.95)}
+.tab[aria-current="page"]{background:var(--durazno);color:#fff;box-shadow:0 3px 0 var(--durazno-sombra)}
+.tab .ext{position:relative}
+.tab .ext::after{content:"";position:absolute;right:-5px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--limon);border:2px solid #fff}
+
+/* ---------- Conócenos: libro de identidad de marca ---------- */
+.libro-zona{--wc:min(100%,max(280px,calc((100vh - 400px) * 1.416)));--wc:min(100%,max(280px,calc((100dvh - 400px) * 1.416)));--wl:min(100%,1700px,max(300px,calc((100vh - 420px) * 2.832)));--wl:min(100%,1700px,max(300px,calc((100dvh - 420px) * 2.832)));padding:0 6px 10px;display:flex;flex-direction:column;align-items:center}
+.libro-zona[hidden]{display:none}
+.libro-esc{width:100%;display:grid;place-items:center}
+.libro-esc > *{grid-area:1/1}
+.libro-cerrado[hidden]{display:none}
+.libro-cerrado{display:block;width:var(--wc);border:0;background:none;padding:0;cursor:pointer;text-align:center;transition:transform .3s ease,opacity .35s ease}
+.libro-cerrado.saliendo{opacity:0;transform:scale(.94);pointer-events:none}
+.libro-cerrado img{width:100%;height:auto;filter:drop-shadow(0 18px 18px rgba(76,50,40,.2));animation:flota 4.5s ease-in-out infinite}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.libro-cerrado:active{transform:scale(.98)}
+.libro-cerrado:focus-visible{outline:3px solid var(--durazno);outline-offset:6px;border-radius:16px}
+.abrir{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 20px;border:2px solid var(--fresa);border-radius:999px;background:#fff;font-size:13px;font-weight:600;color:var(--cacao);box-shadow:0 4px 0 #F3CFCD}
+.abrir svg{width:18px;height:18px;stroke:currentColor}
+/* libro abierto: hoja izquierda y hoja derecha */
+.libro{position:relative;width:var(--wl);aspect-ratio:3200/1130;perspective:4200px;touch-action:pan-y pinch-zoom;cursor:pointer;user-select:none;-webkit-user-select:none;opacity:0;transition:transform .9s cubic-bezier(.5,.05,.25,1),opacity .35s ease}
+.libro.visible{opacity:1}
+.libro.cerrado{transform:translateX(-25%)}
+.libro[hidden]{display:none}
+.libro:focus-visible{outline:3px solid var(--durazno);outline-offset:8px;border-radius:12px}
+.plato{position:absolute;top:0;width:50%;height:100%;background:#fff;transition:opacity .4s ease}
+.plato.izq{left:0;border-radius:12px 0 0 12px;box-shadow:-3px 3px 0 #EFE3D6,-6px 6px 0 #E6D3C2,-10px 22px 30px rgba(76,50,40,.16)}
+.plato.der{left:50%;border-radius:0 12px 12px 0;box-shadow:3px 3px 0 #EFE3D6,6px 6px 0 #E6D3C2,10px 22px 30px rgba(76,50,40,.16)}
+.libro.cerrado .plato.izq{opacity:0}
+.hoja{position:absolute;top:0;left:50%;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;transition:transform .95s cubic-bezier(.5,.05,.25,1),z-index 0s .475s}
+.hoja.pasada{transform:rotateY(-180deg)}
+.pg{position:absolute;inset:0;overflow:hidden;background:#fff;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.pg.f{border-radius:0 12px 12px 0}
+.pg.b{transform:rotateY(180deg);border-radius:12px 0 0 12px}
+.pg img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.pg::after{content:"";position:absolute;inset:0;pointer-events:none}
+.pg.f::after{background:linear-gradient(90deg,rgba(76,50,40,.26),rgba(76,50,40,.05) 5%,rgba(76,50,40,0) 12%,rgba(76,50,40,0) 94%,rgba(76,50,40,.07))}
+.pg.b::after{background:linear-gradient(270deg,rgba(76,50,40,.26),rgba(76,50,40,.05) 5%,rgba(76,50,40,0) 12%,rgba(76,50,40,0) 94%,rgba(76,50,40,.07))}
+.pg.vacia{background:#FBF4EA}
+.libro-aviso{display:none;margin:12px 6px 0;text-align:center;font-size:12.5px;line-height:1.4;color:var(--cacao-suave)}
+.libro-aviso svg{width:16px;height:16px;stroke:var(--durazno);vertical-align:-3px;margin-right:4px}
+@media (max-width:699px) and (orientation:portrait){.libro-aviso.on{display:block}}
+@media (orientation:landscape) and (max-height:520px){
+  .app .cabecera{display:none}
+  .app .encabezado{padding:4px 8px 8px}
+  .app .encabezado .pill,.app .encabezado p{display:none}
+  .app .encabezado h1{margin:0;font-size:22px}
+  .libro-zona{--wl:min(100%,1700px,max(300px,calc((100vh - 230px) * 2.832)));--wl:min(100%,1700px,max(300px,calc((100dvh - 230px) * 2.832)));--wc:min(100%,max(240px,calc((100vh - 230px) * 1.416)));--wc:min(100%,max(240px,calc((100dvh - 230px) * 1.416)))}
+  .libro-pie{margin-top:12px}
+  .puntos{margin-top:10px}
+}
+.libro-pie{width:min(100%,560px);margin:22px auto 0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.libro-pie[hidden],.puntos[hidden]{display:none}
+.lib-btn{flex:none;width:48px;height:48px;border-radius:50%;border:2px solid var(--fresa);background:#fff;color:var(--cacao);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 0 #F3CFCD;transition:transform .15s,opacity .2s}
+.lib-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #F3CFCD}
+.lib-btn:disabled{opacity:.35;cursor:default;box-shadow:none}
+.lib-btn svg{width:22px;height:22px;stroke:currentColor}
+.puntos{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:16px 0 0;max-width:320px}
+.puntos i{width:7px;height:7px;border-radius:50%;background:#F3CFCD;transition:background .25s,transform .25s}
+.puntos i.on{background:var(--durazno);transform:scale(1.35)}
+.libro-pie .puntos{flex:1;min-width:0;margin:0;max-width:none;align-items:center}
+@media (prefers-reduced-motion:reduce){.hoja,.libro,.libro-cerrado,.plato{transition-duration:.01s;transition-delay:0s}.libro-cerrado img{animation:none}}
+
+/* ---------- tablet y escritorio ---------- */
+@media (min-width:700px){
+  /* el fondo crema se ensancha a toda la pantalla */
+  .app{max-width:none}
+  .cabecera img{height:56px}
+  .vista{padding:12px 36px 0}
+  .encabezado{padding:12px 8px 28px}
+  .encabezado h1{font-size:42px}
+  .encabezado p{font-size:15.5px}
+  .pill{font-size:11.5px;padding:7px 18px}
+  .tabbar{width:min(calc(100% - 48px),560px)}
+  /* Productos: tarjetas grandes, proporcionales al tamaño de la pantalla */
+  .lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px;max-width:max(700px,min(100%,calc((100vh - 190px) * 1.6 + 30px)));max-width:max(700px,min(100%,calc((100dvh - 190px) * 1.6 + 30px)));margin:0 auto}
+  .flip{container-type:inline-size}
+  .cara{border-radius:max(30px,6.6cqw)}
+  .frente .info{left:max(20px,4.5cqw);right:max(20px,4.5cqw);bottom:max(18px,4cqw)}
+  .frente .nombre{font-size:max(27px,5.8cqw)}
+  .frente .desc{font-size:max(13px,2.8cqw);margin-top:.3em}
+  .girar,.cerrar{top:max(14px,3cqw);right:max(14px,3cqw);gap:max(6px,1.3cqw);padding:max(7px,1.5cqw) max(12px,2.6cqw) max(7px,1.5cqw) max(10px,2.2cqw);font-size:max(11px,2.4cqw)}
+  .girar svg,.cerrar svg{width:max(15px,3.2cqw);height:max(15px,3.2cqw)}
+  .dorso{padding:max(20px,4.4cqw) max(22px,5cqw) max(22px,5cqw)}
+  .dorso h2{font-size:max(27px,5.8cqw)}
+  .dorso .lema{font-size:max(20px,4.3cqw);margin-bottom:max(8px,1.8cqw)}
+  .dorso p{font-size:max(13px,2.9cqw)}
+  .chips{gap:max(8px,1.8cqw);margin-top:max(12px,2.6cqw)}
+  .chip{font-size:max(11.5px,2.5cqw);padding:max(5px,1.1cqw) max(12px,2.6cqw)}
+  #v-productos .pie{font-size:24px;margin-top:44px}
+  /* Momentos: igual que en el celular */
+  .momentos{max-width:480px;margin-left:auto;margin-right:auto}
+  .fondo .a{width:250px;left:-80px}
+  .fondo .b{width:200px;right:-70px}
+  .fondo .c{width:230px;left:-70px}
+}
+@media (min-width:1100px){
+  .vista{padding:16px 56px 0}
+  .encabezado{padding-bottom:34px}
+  .encabezado h1{font-size:50px}
+  .encabezado p{font-size:17px}
+  .lista{gap:40px;max-width:max(760px,min(100%,calc((100vh - 190px) * 1.6 + 40px)));max-width:max(760px,min(100%,calc((100dvh - 190px) * 1.6 + 40px)))}
+  .fondo .a{width:300px;left:-60px}
+  .fondo .b{width:240px;right:-40px}
+  .fondo .c{width:280px;left:-50px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .flip-in{transition:none}
+  .flip.volteada .mascota img{animation:none}
+  .momentos > img.bg,.estado b{animation:none}
+  .vista{animation:none}
+}
+
+/* ---------- splash de carga ---------- */
+.splash{--k:1;position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--crema);padding:24px;transition:opacity .45s ease,visibility .45s}
+.splash.fuera{opacity:0;visibility:hidden}
+.splash .manchas{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.splash .manchas img{position:absolute;opacity:.3;animation:flotar 6s ease-in-out infinite}
+.splash .manchas .f1{width:calc(190px*var(--k));left:calc(-60px*var(--k));top:calc(-30px*var(--k));transform:rotate(-14deg)}
+.splash .manchas .f2{width:calc(170px*var(--k));right:calc(-55px*var(--k));top:calc(70px*var(--k));transform:rotate(16deg);animation-delay:-1.5s}
+.splash .manchas .f3{width:calc(200px*var(--k));left:calc(-70px*var(--k));bottom:calc(40px*var(--k));transform:rotate(12deg);animation-delay:-3s}
+.splash .manchas .f4{width:calc(150px*var(--k));right:calc(-40px*var(--k));bottom:calc(-20px*var(--k));transform:rotate(-10deg);animation-delay:-4.5s}
+@keyframes flotar{0%,100%{translate:0 0}50%{translate:0 calc(-10px*var(--k,1))}}
+.splash > *:not(.manchas){position:relative}
+.splash .logo{width:min(70vw,calc(280px*var(--k)));height:auto}
+.splash .panda-s{width:calc(120px*var(--k));height:auto;margin:calc(26px*var(--k)) 0 calc(18px*var(--k));border-radius:calc(30px*var(--k));overflow:hidden;border:calc(3px*var(--k)) solid #fff;box-shadow:0 calc(8px*var(--k)) 0 #F3CFCD,0 calc(14px*var(--k)) calc(28px*var(--k)) rgba(76,50,40,.12);animation:rebota 1.6s ease-in-out infinite}
+@keyframes rebota{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(calc(-14px*var(--k,1))) rotate(3deg)}}
+.splash .barra{width:min(62vw,calc(230px*var(--k)));height:calc(16px*var(--k));padding:calc(3px*var(--k));background:#fff;border:calc(2px*var(--k)) solid var(--fresa);border-radius:999px;overflow:hidden}
+.splash .barra b{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--durazno),var(--limon) 62%,var(--fresa));animation:carga 2.4s cubic-bezier(.4,.1,.3,1) forwards}
+@keyframes carga{0%{width:8%}60%{width:72%}100%{width:100%}}
+.splash .lema-s{margin-top:calc(16px*var(--k));font-family:var(--f-slogan);font-size:calc(21px*var(--k));color:var(--coral);display:flex;align-items:center;gap:calc(8px*var(--k))}
+.splash .lema-s img{width:calc(17px*var(--k))}
+@media (prefers-reduced-motion:reduce){.splash .panda-s,.splash .manchas img{animation:none}.splash .barra b{animation:none;width:100%}.splash{transition:none}}
+</style>
+</head>
+<body>
+<div class="splash" id="splash" role="status" aria-label="Cargando Panda Cha">
+  <div class="manchas" aria-hidden="true"><img class="f1" src="app-assets/img/fruta-liche.png" alt=""><img class="f2" src="app-assets/img/fruta-durazno.png" alt=""><img class="f3" src="app-assets/img/fruta-limon.png" alt=""><img class="f4" src="app-assets/img/fruta-fresa.png" alt=""></div>
+  <img class="logo" src="app-assets/img/logo.png" alt="Panda Cha, Good Tea Brighter Days">
+  <img class="panda-s" src="app-assets/img/panda-cara.png" alt="">
+  <div class="barra" aria-hidden="true"><b></b></div>
+  <div class="lema-s">Un día más lindo juntos. <img src="app-assets/img/corazon.png" alt=""></div>
+</div>
+<script>
+(function () {
+  // Splash: en pantallas grandes (o con zoom reducido) los elementos crecen un poco con el ancho de la ventana; el tamano base es el original
+  var sp = document.getElementById('splash');
+  function k() { var w = window.innerWidth; sp.style.setProperty('--k', w >= 700 ? Math.min(1.5, Math.max(1, w / 1408)).toFixed(3) : 1); }
+  k(); window.addEventListener('resize', k);
+})();
+</script>
+
+<div class="app">
+  <div class="fondo" aria-hidden="true">
+    <img class="a" src="app-assets/img/fruta-liche.png" alt="">
+    <img class="b" src="app-assets/img/fruta-durazno.png" alt="">
+    <img class="c" src="app-assets/img/fruta-limon.png" alt="">
+  </div>
+
+  <header class="cabecera"><img src="app-assets/img/logo.png" alt="Panda Cha, Good Tea Brighter Days"></header>
+
+  <!-- PRODUCTOS -->
+  <main id="v-productos" class="vista" hidden>
+    <div class="encabezado">
+      <span class="pill">Nuestros tés</span>
+      <h1>Elige tu <span>sabor</span></h1>
+      <p>Toca una lata para descubrir su historia</p>
+    </div>
+
+    <div class="lista">
+      <button class="flip t-fresa" type="button" aria-pressed="false" aria-label="Té de Fresa. Toca para voltear la tarjeta">
+        <div class="flip-in">
+          <div class="cara frente">
+            <img class="foto" src="app-assets/img/prod-fresa.jpg" alt="Lata de Té de Fresa de Panda Cha">
+            <span class="girar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>Voltear</span>
+            <div class="info"><div class="nombre">Té de Fresa</div><div class="desc">Dulce y refrescante</div></div>
+          </div>
+          <div class="cara dorso">
+            <span class="cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>Volver</span>
+            <div class="mascota"><img src="app-assets/img/mascota-fresa.png" alt="Panda abrazando una fresa"></div>
+            <h2>Té de <span>Fresa</span></h2>
+            <div class="lema">Dulce y refrescante</div>
+            <p>Té frío elaborado con fruta real. Un sabor dulce y jugoso para endulzar tu tarde.</p>
+            <div class="chips"><span class="chip">350 ml</span><span class="chip">Té frío</span><span class="chip">Fruta real</span></div>
+          </div>
+        </div>
+      </button>
+
+      <button class="flip t-durazno" type="button" aria-pressed="false" aria-label="Té de Durazno. Toca para voltear la tarjeta">
+        <div class="flip-in">
+          <div class="cara frente">
+            <img class="foto" src="app-assets/img/prod-durazno.jpg" alt="Lata de Té de Durazno de Panda Cha">
+            <span class="girar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>Voltear</span>
+            <div class="info"><div class="nombre">Té de Durazno</div><div class="desc">Jugoso y relajante</div></div>
+          </div>
+          <div class="cara dorso">
+            <span class="cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>Volver</span>
+            <div class="mascota"><img src="app-assets/img/mascota-durazno.png" alt="Panda abrazando un durazno"></div>
+            <h2>Té de <span>Durazno</span></h2>
+            <div class="lema">Jugoso y relajante</div>
+            <p>Té frío saborizado con frutal real. Suave y reconfortante para hacer una pausa en tu día.</p>
+            <div class="chips"><span class="chip">350 ml</span><span class="chip">Té frío</span><span class="chip">Frutal real</span></div>
+          </div>
+        </div>
+      </button>
+
+      <button class="flip t-lichi" type="button" aria-pressed="false" aria-label="Té de Lichi. Toca para voltear la tarjeta">
+        <div class="flip-in">
+          <div class="cara frente">
+            <img class="foto" src="app-assets/img/prod-lichi.jpg" alt="Lata de Té de Lichi de Panda Cha">
+            <span class="girar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>Voltear</span>
+            <div class="info"><div class="nombre">Té de Lichi</div><div class="desc">Frutal y delicado</div></div>
+          </div>
+          <div class="cara dorso">
+            <span class="cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>Volver</span>
+            <div class="mascota"><img src="app-assets/img/mascota-lichi.png" alt="Panda abrazando un lichi"></div>
+            <h2>Té de <span>Lichi</span></h2>
+            <div class="lema">Frutal y delicado</div>
+            <p>Té frío elaborado con fruta real. Un toque suave y delicado que se siente ligero y fresco.</p>
+            <div class="chips"><span class="chip">350 ml</span><span class="chip">Té frío</span><span class="chip">Fruta real</span></div>
+          </div>
+        </div>
+      </button>
+
+      <button class="flip t-limon" type="button" aria-pressed="false" aria-label="Té de Limón. Toca para voltear la tarjeta">
+        <div class="flip-in">
+          <div class="cara frente">
+            <img class="foto" src="app-assets/img/prod-limon.jpg" alt="Lata de Té de Limón de Panda Cha">
+            <span class="girar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>Voltear</span>
+            <div class="info"><div class="nombre">Té de Limón</div><div class="desc">Cítrico y enérgico</div></div>
+          </div>
+          <div class="cara dorso">
+            <span class="cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/></svg>Volver</span>
+            <div class="mascota"><img src="app-assets/img/mascota-limon.png" alt="Panda abrazando una rodaja de limón"></div>
+            <h2>Té de <span>Limón</span></h2>
+            <div class="lema">Cítrico y enérgico</div>
+            <p>Té frío saborizado con frutal real. Cítrico y vivo para recargar tu día con una sonrisa.</p>
+            <div class="chips"><span class="chip">350 ml</span><span class="chip">Té frío</span><span class="chip">Frutal real</span></div>
+          </div>
+        </div>
+      </button>
+    </div>
+
+    <div class="pie">Buen té para un mejor día <img src="app-assets/img/corazon.png" alt=""></div>
+  </main>
+
+  <!-- MOMENTOS -->
+  <main id="v-momentos" class="vista" hidden>
+    <div class="encabezado">
+      <span class="pill">Tus mejores momentos</span>
+      <h1>Panda Cha <span>Momentos</span></h1>
+    </div>
+    <section class="momentos" aria-label="Filtro de cámara, próximamente">
+      <img class="bg" src="app-assets/img/momentos-fondo.jpg" alt="">
+      <div class="visor" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <div class="m-texto">
+        <span class="estado"><b></b>En construcción</span>
+        <div class="icono-cam" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F04D1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/><path d="M18.5 4.2v2M17.5 5.2h2" stroke="#ED9F2D"/></svg>
+        </div>
+        <h2>Muy pronto: filtros para tus <span>mejores momentos</span></h2>
+        <p>Estamos preparando un filtro de cámara con el panda para que lo lleves a tus fotos y videos.</p>
+      </div>
+    </section>
+    <div class="pie">Pequeños momentos, grandes sonrisas. <img src="app-assets/img/corazon.png" alt=""></div>
+  </main>
+
+  <!-- CONÓCENOS -->
+  <main id="v-conocenos" class="vista">
+    <div class="encabezado">
+      <span class="pill">Conócenos</span>
+      <h1>Identidad <span>de marca</span></h1>
+      <p id="lib-sub">Toca el libro para abrirlo</p>
+    </div>
+    <section class="libro-zona" aria-label="Manual de marca, libro de 17 páginas">
+      <div class="libro-esc">
+        <button class="libro-cerrado" id="libro-cerrado" type="button" aria-label="Abrir el manual de marca">
+          <img src="app-assets/img/libro-cerrado.png" alt="Libro del manual de marca de Panda Cha">
+          <span class="abrir"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>Abrir el libro</span>
+        </button>
+        <div class="libro cerrado" id="libro" hidden tabindex="0" role="group" aria-roledescription="libro" aria-label="Manual de marca. Toca el lado derecho o izquierdo, o desliza, para pasar la página."></div>
+      </div>
+      <div class="libro-pie" id="libro-pie" hidden>
+        <button class="lib-btn" id="lib-ant" type="button" aria-label="Página anterior"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="puntos" id="puntos" aria-hidden="true"></div>
+        <button class="lib-btn" id="lib-sig" type="button" aria-label="Página siguiente"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <p class="libro-aviso" id="libro-aviso"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 3v2M17 3v2M7 19v2M17 19v2"/></svg>Gira tu celular para ver las páginas más grandes.</p>
+    </section>
+    <div class="pie">Pequeños momentos, grandes sonrisas. <img src="app-assets/img/corazon.png" alt=""></div>
+  </main>
+
+
+  <!-- BARRA INFERIOR -->
+  <nav class="tabbar" aria-label="Navegación principal">
+    <button class="tab" type="button" data-vista="conocenos" aria-current="page">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h6"/></svg>
+      Conócenos
+    </button>
+    <button class="tab" type="button" data-vista="productos">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l1 3v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6z"/><path d="M7 6h10M7 10h10"/></svg>
+      Productos
+    </button>
+    <a class="tab" href="abrir-ar.html" target="_blank" rel="noopener">
+      <span class="ext"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3.5 7.5 12 12l8.5-4.5z"/><path d="M3.5 7.5v9L12 21l8.5-4.5v-9"/><path d="M12 12v9"/></svg></span>
+      AR
+    </a>
+    <a class="tab" href="abrir-filtro.html" target="_blank" rel="noopener">
+      <span class="ext"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg></span>
+      Momentos
+    </a>
+  </nav>
+</div>
+
+<script>
+(function () {
+  // Splash: se muestra un mínimo de 2.5 s y se quita cuando todo cargó (o a los 5 s como máximo)
+  var splash = document.getElementById('splash');
+  var inicio = Date.now(), cerrado = false;
+  function cerrar() {
+    if (cerrado) return; cerrado = true;
+    var resto = Math.max(0, 2500 - (Date.now() - inicio));
+    setTimeout(function () {
+      splash.classList.add('fuera');
+      setTimeout(function () { splash.remove(); }, 600);
+    }, resto);
+  }
+  if (document.readyState === 'complete') cerrar(); else window.addEventListener('load', cerrar);
+  setTimeout(cerrar, 5000);
+})();
+(function () {
+  // Tarjetas que se voltean
+  document.querySelectorAll('.flip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var v = c.classList.toggle('volteada');
+      c.setAttribute('aria-pressed', v ? 'true' : 'false');
+    });
+  });
+
+  // Cambio de pestaña (Conócenos / Productos). "AR" y "Momentos" son enlaces directos (abren su splash).
+  var tabs = document.querySelectorAll('.tab[data-vista]');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (o) { o.removeAttribute('aria-current'); });
+      t.setAttribute('aria-current', 'page');
+      ['productos', 'momentos', 'conocenos'].forEach(function (v) {
+        document.getElementById('v-' + v).hidden = t.dataset.vista !== v;
+      });
+      window.scrollTo({ top: 0 });
+    });
+  });
+})();
+(function () {
+  // Libro de identidad de marca: pliego con hoja izquierda y hoja derecha
+  var PAG = [
+    ['Portada', 'Portada'], ['01', 'Nuestra marca'], ['02', 'Filosofía Panda Cha'], ['03', 'Logo'],
+    ['04', 'Variantes del logo'], ['05', 'Usos prohibidos'], ['06', 'Retícula y área de protección'],
+    ['07', 'Paleta de color'], ['08', 'Tipografías'], ['09', 'Elementos visuales'], ['10', 'Empaques'],
+    ['11', 'Mockups'], ['12', 'Productos, té de durazno'], ['13', 'Productos, té de limón'],
+    ['14', 'Productos, té de fresa'], ['15', 'Productos, té de liche'], ['16', 'Aplicaciones en contexto']
+  ];
+  var HOJAS = 9;            // 9 hojas de papel: frente y vuelta (la última vuelta queda en blanco)
+  var MAX = 8;              // 0 = libro cerrado, 1 a 8 = pliegos abiertos
+  var cerrado = document.getElementById('libro-cerrado');
+  var libro = document.getElementById('libro');
+  var pie = document.getElementById('libro-pie');
+  var puntosBox = document.getElementById('puntos');
+  var aviso = document.getElementById('libro-aviso');
+  var sub = document.getElementById('lib-sub');
+  var ant = document.getElementById('lib-ant'), sig = document.getElementById('lib-sig');
+  var hojas = [], puntos = [], estado = 0, abierto = false, construido = false;
+
+  function rutaPagina(i) { return 'app-assets/img/manual-' + (i < 10 ? '0' : '') + i + '.jpg'; }
+  function cara(tipo, i) {
+    var d = document.createElement('div');
+    d.className = 'pg ' + tipo;
+    if (i === null || i >= PAG.length) { d.className += ' vacia'; return d; }
+    var im = document.createElement('img');
+    im.src = rutaPagina(i);
+    im.decoding = 'async';
+    im.alt = 'Manual de marca, ' + (i === 0 ? 'portada' : PAG[i][0] + ', ' + PAG[i][1]);
+    d.appendChild(im);
+    return d;
+  }
+  function construir() {
+    if (construido) return; construido = true;
+    ['izq', 'der'].forEach(function (c) {
+      var pl = document.createElement('div'); pl.className = 'plato ' + c; pl.setAttribute('aria-hidden', 'true'); libro.appendChild(pl);
+    });
+    for (var i = 0; i < HOJAS; i++) {
+      var h = document.createElement('div');
+      h.className = 'hoja';
+      h.appendChild(cara('f', 2 * i));
+      h.appendChild(cara('b', 2 * i + 1));
+      libro.appendChild(h);
+      hojas.push(h);
+    }
+    for (var k = 0; k <= MAX; k++) { var pt = document.createElement('i'); puntosBox.appendChild(pt); puntos.push(pt); }
+  }
+  function ir(n) {
+    estado = Math.max(0, Math.min(MAX, n));
+    libro.classList.toggle('cerrado', estado === 0);
+    hojas.forEach(function (h, i) {
+      h.classList.toggle('pasada', i < estado);
+      h.style.zIndex = i < estado ? (i + 1) : (HOJAS - i);
+    });
+    puntos.forEach(function (p, i) { p.classList.toggle('on', i === estado); });
+    ant.disabled = estado === 0; sig.disabled = estado === MAX;
+  }
+  // Precarga de las páginas para que el libro abra sin parpadeos
+  var cache = [];
+  function precargar(desde, hasta) {
+    for (var i = desde; i <= hasta; i++) { var im = new Image(); im.src = rutaPagina(i); cache.push(im); }
+  }
+  window.addEventListener('load', function () {
+    setTimeout(function () { precargar(0, 4); setTimeout(function () { precargar(5, 16); }, 1500); }, 300);
+  });
+  function abrir() {
+    if (abierto) return; abierto = true;
+    construir();
+    var portada = libro.querySelector('.pg.f img');
+    var espera = new Promise(function (ok) { setTimeout(ok, 1500); });
+    var lista = (portada && portada.decode) ? Promise.race([portada.decode().catch(function () {}), espera]) : Promise.resolve();
+    lista.then(empezar);
+  }
+  function empezar() {
+    var esc = libro.parentNode, h0 = esc.offsetHeight;
+    libro.hidden = false; pie.hidden = false; aviso.classList.add('on');
+    sub.textContent = 'Toca un lado del libro o desliza para pasar las páginas';
+    ir(0);
+    esc.style.height = h0 + 'px';
+    void esc.offsetHeight;
+    esc.style.transition = 'height .6s cubic-bezier(.5,.05,.25,1)';
+    esc.style.height = libro.offsetHeight + 'px';
+    cerrado.classList.add('saliendo');
+    requestAnimationFrame(function () { requestAnimationFrame(function () { libro.classList.add('visible'); }); });
+    setTimeout(function () { ir(1); }, 480);
+    setTimeout(function () { cerrado.hidden = true; esc.style.transition = ''; esc.style.height = ''; }, 700);
+  }
+  cerrado.addEventListener('click', abrir);
+  ant.addEventListener('click', function () { ir(estado - 1); });
+  sig.addEventListener('click', function () { ir(estado + 1); });
+  var x0 = null;
+  libro.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+  libro.addEventListener('pointerup', function (e) {
+    if (x0 === null) return;
+    var dx = e.clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) { ir(estado + (dx < 0 ? 1 : -1)); return; }
+    if (Math.abs(dx) < 10) {
+      if (estado === 0) { ir(1); return; }
+      var r = libro.getBoundingClientRect();
+      ir(estado + ((e.clientX - r.left) < r.width / 2 ? -1 : 1));
+    }
+  });
+  libro.addEventListener('pointercancel', function () { x0 = null; });
+  document.addEventListener('keydown', function (e) {
+    if (document.getElementById('v-conocenos').hidden || !abierto) return;
+    if (e.key === 'ArrowRight') ir(estado + 1);
+    else if (e.key === 'ArrowLeft') ir(estado - 1);
+  });
+})();
+</script>
+</body>
+</html>

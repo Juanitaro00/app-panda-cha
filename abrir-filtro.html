@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panda Cha · Filtro facial</title>
+<meta name="theme-color" content="#FEFBF7">
+<link rel="icon" href="app-assets/img/panda-cara.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Caveat+Brush&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<noscript><meta http-equiv="refresh" content="1;url=https://face-filter-two.vercel.app/"></noscript>
+<style>
+:root{
+  --durazno:#F04D1A; --durazno-sombra:#B53A12; --limon:#ED9F2D; --fresa:#FCB6B5; --hoja:#6A9D42;
+  --cacao:#4C3228; --cacao-suave:#6B5047; --crema:#FEFBF7; --coral:#E4505A;
+  --f-titulo:'Baloo 2','Nunito',system-ui,sans-serif; --f-texto:'Poppins',system-ui,sans-serif; --f-slogan:'Caveat Brush',cursive;
+  --tab-h:76px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--crema);color:var(--cacao);font-family:var(--f-texto)}
+body{min-height:100vh;min-height:100dvh}
+img{display:block}
+button{font:inherit;color:inherit}
+
+
+/* ---------- splash de carga ---------- */
+.splash{--k:1;position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--crema);padding:24px;transition:opacity .45s ease,visibility .45s}
+.splash.fuera{opacity:0;visibility:hidden}
+.splash .manchas{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.splash .manchas img{position:absolute;opacity:.3;animation:flotar 6s ease-in-out infinite}
+.splash .manchas .f1{width:calc(190px*var(--k));left:calc(-60px*var(--k));top:calc(-30px*var(--k));transform:rotate(-14deg)}
+.splash .manchas .f2{width:calc(170px*var(--k));right:calc(-55px*var(--k));top:calc(70px*var(--k));transform:rotate(16deg);animation-delay:-1.5s}
+.splash .manchas .f3{width:calc(200px*var(--k));left:calc(-70px*var(--k));bottom:calc(40px*var(--k));transform:rotate(12deg);animation-delay:-3s}
+.splash .manchas .f4{width:calc(150px*var(--k));right:calc(-40px*var(--k));bottom:calc(-20px*var(--k));transform:rotate(-10deg);animation-delay:-4.5s}
+@keyframes flotar{0%,100%{translate:0 0}50%{translate:0 calc(-10px*var(--k,1))}}
+.splash > *:not(.manchas){position:relative}
+.splash .logo{width:min(70vw,calc(280px*var(--k)));height:auto}
+.splash .panda-s{width:calc(120px*var(--k));height:auto;margin:calc(26px*var(--k)) 0 calc(18px*var(--k));border-radius:calc(30px*var(--k));overflow:hidden;border:calc(3px*var(--k)) solid #fff;box-shadow:0 calc(8px*var(--k)) 0 #F3CFCD,0 calc(14px*var(--k)) calc(28px*var(--k)) rgba(76,50,40,.12);animation:rebota 1.6s ease-in-out infinite}
+@keyframes rebota{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(calc(-14px*var(--k,1))) rotate(3deg)}}
+.splash .barra{width:min(62vw,calc(230px*var(--k)));height:calc(16px*var(--k));padding:calc(3px*var(--k));background:#fff;border:calc(2px*var(--k)) solid var(--fresa);border-radius:999px;overflow:hidden}
+.splash .barra b{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--durazno),var(--limon) 62%,var(--fresa));animation:carga 2.4s cubic-bezier(.4,.1,.3,1) forwards}
+@keyframes carga{0%{width:8%}60%{width:72%}100%{width:100%}}
+.splash .lema-s{margin-top:calc(16px*var(--k));font-family:var(--f-slogan);font-size:calc(21px*var(--k));color:var(--coral);display:flex;align-items:center;gap:calc(8px*var(--k))}
+.splash .lema-s img{width:calc(17px*var(--k))}
+@media (prefers-reduced-motion:reduce){.splash .panda-s,.splash .manchas img{animation:none}.splash .barra b{animation:none;width:100%}.splash{transition:none}}
+
+/* ---------- filtro facial (se carga por debajo del splash) ---------- */
+#filtro{position:fixed;inset:0;width:100%;height:100%;height:100dvh;border:0;display:block;background:#000}
+.splash .barra b{width:8%;animation:none;transition:width .3s ease-out}
+@media (prefers-reduced-motion:reduce){.splash .barra b{width:100%;transition:none}}
+</style>
+</head>
+<body>
+<iframe id="filtro" src="https://face-filter-two.vercel.app/" title="Filtro facial Panda Cha" allow="camera; autoplay; fullscreen" onload="this.dataset.cargado=Date.now()"></iframe>
+<div class="splash" id="splash" role="status" aria-label="Cargando Panda Cha">
+  <div class="manchas" aria-hidden="true"><img class="f1" src="app-assets/img/fruta-liche.png" alt=""><img class="f2" src="app-assets/img/fruta-durazno.png" alt=""><img class="f3" src="app-assets/img/fruta-limon.png" alt=""><img class="f4" src="app-assets/img/fruta-fresa.png" alt=""></div>
+  <img class="logo" src="app-assets/img/logo.png" alt="Panda Cha, Good Tea Brighter Days">
+  <img class="panda-s" src="app-assets/img/panda-cara.png" alt="">
+  <div class="barra" aria-hidden="true"><b></b></div>
+  <div class="lema-s">Un día más lindo juntos. <img src="app-assets/img/corazon.png" alt=""></div>
+</div>
+<script>
+(function () {
+  // Splash: en pantallas grandes (o con zoom reducido) los elementos crecen un poco con el ancho de la ventana; el tamano base es el original
+  var sp = document.getElementById('splash');
+  function k() { var w = window.innerWidth; sp.style.setProperty('--k', w >= 700 ? Math.min(1.5, Math.max(1, w / 1408)).toFixed(3) : 1); }
+  k(); window.addEventListener('resize', k);
+})();
+</script>
+<script>
+(function () {
+  // Splash del filtro facial. El filtro (en Vercel) se carga debajo del splash y, cuando ya cargo, el splash se quita
+  // y el filtro queda listo. Como el filtro vive en otro dominio no se puede saber en que momento exacto termina de
+  // cargar el modelo, asi que el splash dura un minimo y se alarga si la conexion es lenta.
+  var MIN = 5000;      // tiempo minimo del splash (ms)
+  var MAX = 18000;     // tiempo maximo, pase lo que pase
+  var FACTOR = 2.5;    // cuanto se alarga respecto a lo que tardo en cargar la pagina del filtro
+  var splash = document.getElementById('splash');
+  var marco = document.getElementById('filtro');
+  var barra = splash.querySelector('.barra b');
+  var sinMovimiento = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var inicio = Date.now(), cargoEn = 0, fin = false, p = 8;
+
+  function marcarCarga() { if (!cargoEn) cargoEn = Math.max(1, Date.now() - inicio); }
+  if (marco.dataset.cargado) marcarCarga(); else marco.addEventListener('load', marcarCarga);
+
+  function mostrar() {
+    if (fin) return; fin = true;
+    clearInterval(reloj);
+    if (!sinMovimiento) barra.style.width = '100%';
+    setTimeout(function () {
+      splash.classList.add('fuera');
+      setTimeout(function () { splash.remove(); }, 600);
+    }, sinMovimiento ? 0 : 350);
+  }
+
+  var reloj = setInterval(function () {
+    var t = Date.now() - inicio;
+    var meta = cargoEn ? Math.min(MAX, Math.max(MIN, cargoEn * FACTOR)) : MAX;
+    if (t >= meta) return mostrar();
+    if (sinMovimiento) return;
+    // la barra avanza sola hasta que se sabe cuando carga la pagina; despues sigue el tiempo que falta
+    var suave = 8 + 52 * (1 - Math.exp(-t / 4000));
+    var real = cargoEn ? Math.min(96, 100 * t / meta) : 0;
+    p = Math.max(p, suave, real);
+    barra.style.width = p.toFixed(1) + '%';
+  }, 150);
+})();
+</script>
+</body>
+</html>
